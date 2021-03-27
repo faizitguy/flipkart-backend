@@ -2,6 +2,7 @@ const User = require("../../models/user");
 const bcrypt = require("bcrypt");
 const shortid = require("shortid");
 const jwt = require("jsonwebtoken");
+const { validationResult } = require("express-validator");
 
 const generateJwtToken = (_id, role) => {
   return jwt.sign({ _id, role }, process.env.JWT_SECRET, {
@@ -10,6 +11,9 @@ const generateJwtToken = (_id, role) => {
 };
 
 exports.signup = (req, res) => {
+  const errors = validationResult(req);
+  return res.status(400).json({ errors: errors.array() });
+
   User.findOne({ email: req.body.email }).exec(async (error, user) => {
     if (user)
       return res.status(400).json({

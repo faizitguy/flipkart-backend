@@ -1,15 +1,14 @@
 const express = require("express");
-const router = express.Router();
+const { signup, signin } = require("../../controller/admin/auth");
 const {
-  signup,
-  signin,
-  requireSignin,
-} = require("../../controller/admin/auth");
+  validateSignupRequest,
+  isRequestValidated,
+  validateSigninRequest,
+} = require("../../validators/auth");
 
-const bcrypt = require("bcrypt");
-const shortid = require("shortid");
+const router = express.Router();
 
-router.post("/admin/signup", signup);
-router.post("/admin/signin", signin);
+router.post("/admin/signup", validateSignupRequest, isRequestValidated, signup);
+router.post("/admin/signin", validateSigninRequest, isRequestValidated, signin);
 
 module.exports = router;
