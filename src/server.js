@@ -1,12 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const env = require("dotenv");
-
 const bodyParser = require("body-parser");
+
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin/auth");
+
 env.config();
 const app = express();
+
 app.use(express.json());
 
 mongoose.connect(
