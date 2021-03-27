@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../../models/user");
 const bcrypt = require("bcrypt");
 const shortid = require("shortid");
 const jwt = require("jsonwebtoken");
@@ -13,7 +13,7 @@ exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec(async (error, user) => {
     if (user)
       return res.status(400).json({
-        error: "User already registered",
+        error: "Admin already registered",
       });
 
     const { firstName, lastName, email, password } = req.body;
@@ -24,6 +24,7 @@ exports.signup = (req, res) => {
       email,
       hash_password,
       username: shortid.generate(),
+      role: "admin",
     });
 
     newUser.save((error, user) => {
@@ -37,7 +38,7 @@ exports.signup = (req, res) => {
         const token = generateJwtToken(user._id, user.role);
         const { _id, firstName, lastName, email, role, fullName } = user;
         return res.status(201).json({
-          message: "User created Successfully",
+          message: "Admin created Successfully",
         });
       }
     });
@@ -49,7 +50,7 @@ exports.signin = (req, res) => {
     if (error) return res.status(400).json({ error });
     if (user) {
       const isPassword = await user.authenticate(req.body.password);
-      if (isPassword && user.role === "user") {
+      if (isPassword && user.role === "admin") {
         // const token = jwt.sign(
         //   { _id: user._id, role: user.role },
         //   process.env.JWT_SECRET,
